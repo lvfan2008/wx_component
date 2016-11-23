@@ -179,7 +179,7 @@ class WxComponentService
      * @param $appId 公众号appId
      * @return Wechat2
      */
-    public function getWechat($appId, $authCode = "", $expireIn = 0)
+    public function getWechat($appId)
     {
         static $_ins = array();
         if (isset($_ins[$appId])) {
@@ -332,5 +332,43 @@ class WxComponentService
     public function  getOauthUserinfo($accessToken, $openid)
     {
         return $this->getWxComponent()->getOauthUserinfo($accessToken, $openid);
+    }
+
+    /**
+     * 代公众号使用JS SDK时，JS SDK的配置信息
+     * @param $appId 公众号appId  必须经过授权过，并缓存了access_token
+     * @param $url 当前页面URL
+     * @return array|bool
+     */
+    public function getJsSign($appId, $url)
+    {
+        $jsTicket = $this->getJsTicket($appId);
+        if ($jsTicket) {
+            $weObj = $this->getWechat($appId);
+            $weObj->jsapi_ticket = $jsTicket;
+            $signPackage = $weObj->getJsSign($url);
+            $signPackage['appId'] = $appId;
+            return $signPackage;
+        }
+        return false;
+    }
+
+    /**
+     * 代替公众号使用JS SDK时，获取jsapi_ticket
+     * @param $appId 公众号appId 必须经过授权过，并缓存了access_token
+     * @return bool
+     */
+    public function getJsTicket($appId)
+    {
+        $authName = "wxComponentJsTicket" . $this->wxComponentAppId . "_" . $appId;
+        $jsTicket = $this->cache->getCache($authName);
+        if ($jsTicket) return $jsTicket;
+        $weObj = $this->getWechat($appId);
+        $json = $weObj->getJsTicket2($appId);
+        if ($json) {
+            $this->cache->setCache($authName, $json['ticket'], $json['expires_in']);
+            return $json['ticket'];
+        }
+        return false;
     }
 }
