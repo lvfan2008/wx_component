@@ -11,7 +11,7 @@ wx_component 根据[微信官方开放平台](https://open.weixin.qq.com/)提供
 
 ## 建议和疑问
 
-如果你有好的建议或者疑问，欢迎给我提issue或pull request，或者发邮件到lv_fan@sina.com 。
+如果你有好的建议或者疑问，欢迎给我提issue或pull request，或者发邮件到lv_fan2008@sina.com 。
 
 ## LICENSE
 
