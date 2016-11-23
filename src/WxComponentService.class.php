@@ -6,7 +6,7 @@ if (!class_exists("Wechat2")) include_once "3rd/wechat/Wechat2.class.php";
 
 /**
  * 公众号授权服务类
- * @author  lv_fan2008@vpubao.com
+ * @author  lv_fan2008@sina.com
  */
 class WxComponentService
 {

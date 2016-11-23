@@ -5,7 +5,7 @@ if (!class_exists("WXBizMsgCrypt")) {
 
 /**
  * 微信公众号授权服务SDK,
- * @author  lv_fan2008@vpubao.com
+ * @author  lv_fan2008@sina.com
  */
 class WxComponent
 {

@@ -1,7 +1,7 @@
 <?php
 /**
  * 微信第三方平台授权回调页面
- * @author  lv_fan2008@vpubao.com
+ * @author  lv_fan2008@sina.com
  */
 
 include_once "config.php";

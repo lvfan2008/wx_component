@@ -1,7 +1,7 @@
 <?php
 /**
  * 微信配置文件
- * @author  lv_fan2008@vpubao.com
+ * @author  lv_fan2008@sina.com
  */
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 date_default_timezone_set('Asia/Shanghai');

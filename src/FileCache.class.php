@@ -2,7 +2,7 @@
 
 /**
  * 文件缓存类
- * @author  lv_fan2008@vpubao.com
+ * @author  lv_fan2008@sina.com
  */
 class FileCache extends BaseCache
 {

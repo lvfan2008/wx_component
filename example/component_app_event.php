@@ -1,7 +1,7 @@
 <?php
 /**
  * 授权后代替公众号实现业务
- * @author  lv_fan2008@vpubao.com
+ * @author  lv_fan2008@sina.com
  */
 
 include_once "config.php";

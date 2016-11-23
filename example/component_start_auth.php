@@ -1,7 +1,7 @@
 <?php
 /**
  * 第三方平台发起公众号授权
- * @author  lv_fan2008@vpubao.com
+ * @author  lv_fan2008@sina.com
  */
 
 include_once "config.php";
