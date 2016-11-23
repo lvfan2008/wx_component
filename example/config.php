@@ -6,14 +6,17 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 date_default_timezone_set('Asia/Shanghai');
 
+/**
+ * 微信公众号第三方平台配置信息
+ */
 $GLOBALS['wxComponentConfig'] = [
-    'wxxxxxxxxxxxxxxxxx' => [
-        'component_appid' => 'wxxxxxxxxxxxxxxxxx',
-        'component_appsecret' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-        'encodingAesKey' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-        'token' => 'xxxxxxxxxxxxx',
-        'receive_component_event_url' => 'xxxxxxxxxxxxx',
-        'receive_app_event_url' => 'xxxxxxxxxxxxx'
+    'wxxxxxxxxxxxxxxxxx'/* 平台AppId */ => [
+        'component_appid' => 'wxxxxxxxxxxxxxxxxx', /* 平台AppId */
+        'component_appsecret' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', /* 平台AppSecret */
+        'encodingAesKey' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', /* 平台授权后公众号消息加解密Key */
+        'token' => 'xxxxxxxxxxxxx', /* 平台公众号消息校验Token */
+        'receive_component_event_url' => 'xxxxxxxxxxxxx', /* 平台授权公众号消息与事件接收URL */
+        'receive_app_event_url' => 'xxxxxxxxxxxxx' /* 平台授权事件接收URL */
     ],
 ];
 $GLOBALS['cacheDir'] = dirname(__FILE__) . "/cache/";
