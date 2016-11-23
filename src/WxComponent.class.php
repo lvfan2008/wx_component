@@ -4,7 +4,7 @@ if (!class_exists("WXBizMsgCrypt")) {
 }
 
 /**
- * 微信公众号授权服务SDK,
+ *    微信公众号授权服务SDK,
  * @author  lv_fan2008@sina.com
  */
 class WxComponent
@@ -18,6 +18,16 @@ class WxComponent
     const GET_WX_OPTION_INFO_URL = '/api_get_authorizer_option?component_access_token=';
     const SET_WX_OPTION_INFO_URL = '/api_set_authorizer_option?component_access_token=';
     const WX_AUTH_CB_URL = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?';
+
+    //  代公众号发起网页授权相关
+    //  在“{网页开发域名}”或者下级域名“$APPID$.{网页开发域名}” 的形式,可以代公众号发起网页授权。
+    const OAUTH_PREFIX = 'https://open.weixin.qq.com/connect/oauth2';
+    const OAUTH_AUTHORIZE_URL = '/authorize?';
+    const API_BASE_URL_PREFIX = 'https://api.weixin.qq.com'; //以下API接口URL需要使用此前缀
+    const OAUTH_TOKEN_URL = '/sns/oauth2/component/access_token?';
+    const OAUTH_REFRESH_URL = '/sns/oauth2/component/refresh_token?';
+    const OAUTH_USERINFO_URL = '/sns/userinfo?';
+    const OAUTH_AUTH_URL = '/sns/auth?';
 
     public $component_appid;
     public $component_appsecret;
@@ -305,6 +315,112 @@ class WxComponent
         die("success");
     }
 
+    /**
+     * 代公众号发起网页授权 oauth 授权跳转接口
+     * @param $appid 公众号appId
+     * @param $callback 跳转URL
+     * @param string $state 状态信息，最多128字节
+     * @param string $scope 授权作用域 snsapi_base或者snsapi_userinfo 或者 snsapi_base,snsapi_userinfo
+     * @return string
+     */
+    public function getOauthRedirect($appid, $callback, $state = '', $scope = 'snsapi_base')
+    {
+        return self::OAUTH_PREFIX . self::OAUTH_AUTHORIZE_URL . 'appid=' . $appid . '&redirect_uri=' . urlencode($callback) .
+        '&response_type=code&scope=' . $scope . '&state=' . $state . '&component_appid=' . urlencode($this->component_appid)
+        . '#wechat_redirect';
+    }
+
+    /**
+     * 代公众号发起网页授权 回调URL时，通过code获取Access Token
+     * @return array {access_token,expires_in,refresh_token,openid,scope}
+     */
+    public function getOauthAccessToken($appid, $component_access_token)
+    {
+        $code = isset($_GET['code']) ? $_GET['code'] : '';
+        if (!$code) return false;
+        $result = $this->http_post(self::API_BASE_URL_PREFIX . self::OAUTH_TOKEN_URL . 'appid=' . $appid
+            . '&code=' . $code . '&grant_type=authorization_code'
+            . '&component_appid=' . urlencode($this->component_appid)
+            . '&component_access_token=' . $component_access_token);
+        if ($result) {
+            $json = json_decode($result, true);
+            if (!$json || !empty($json['errcode'])) {
+                $this->errCode = $json['errcode'];
+                $this->errMsg = $json['errmsg'];
+                return false;
+            }
+            return $json;
+        }
+        return false;
+    }
+
+    /**
+     * 代公众号发起网页授权  刷新access token并续期
+     * @param string $refresh_token
+     * @return boolean|mixed
+     */
+    public function getOauthRefreshToken($appId, $refresh_token, $component_access_token)
+    {
+        $result = $this->http_post(self::API_BASE_URL_PREFIX . self::OAUTH_REFRESH_URL
+            . 'appid=' . $appId . '&grant_type=refresh_token&refresh_token=' . $refresh_token
+            . '&component_appid=' . urlencode($this->component_appid)
+            . '&component_access_token=' . $component_access_token
+        );
+        if ($result) {
+            $json = json_decode($result, true);
+            if (!$json || !empty($json['errcode'])) {
+                $this->errCode = $json['errcode'];
+                $this->errMsg = $json['errmsg'];
+                return false;
+            }
+            return $json;
+        }
+        return false;
+    }
+
+    /**
+     * 获取授权后的用户资料
+     * @param string $access_token
+     * @param string $openid
+     * @return array {openid,nickname,sex,province,city,country,headimgurl,privilege,[unionid]}
+     * 注意：unionid字段 只有在用户将公众号绑定到微信开放平台账号后，才会出现。建议调用前用isset()检测一下
+     */
+    public function getOauthUserinfo($access_token, $openid)
+    {
+        $result = $this->http_post(self::API_BASE_URL_PREFIX . self::OAUTH_USERINFO_URL . 'access_token=' . $access_token . '&openid=' . $openid);
+        if ($result) {
+            $json = json_decode($result, true);
+            if (!$json || !empty($json['errcode'])) {
+                $this->errCode = $json['errcode'];
+                $this->errMsg = $json['errmsg'];
+                return false;
+            }
+            return $json;
+        }
+        return false;
+    }
+
+    /**
+     * 检验授权凭证是否有效
+     * @param string $access_token
+     * @param string $openid
+     * @return boolean 是否有效
+     */
+    public function getOauthAuth($access_token, $openid)
+    {
+        $result = $this->http_post(self::API_BASE_URL_PREFIX . self::OAUTH_AUTH_URL . 'access_token=' . $access_token . '&openid=' . $openid);
+        if ($result) {
+            $json = json_decode($result, true);
+            if (!$json || !empty($json['errcode'])) {
+                $this->errCode = $json['errcode'];
+                $this->errMsg = $json['errmsg'];
+                return false;
+            } else
+                if ($json['errcode'] == 0) return true;
+        }
+        return false;
+    }
+
 
     private function log($log)
     {
@@ -317,11 +433,11 @@ class WxComponent
     /**
      * POST 请求
      * @param string $url
-     * @param array $param
+     * @param string $param
      * @param boolean $post_file 是否文件上传
      * @return string content
      */
-    private function http_post($url, $param, $post_file = false)
+    private function http_post($url, $param = "", $post_file = false)
     {
         $oCurl = curl_init();
         if (stripos($url, "https://") !== FALSE) {

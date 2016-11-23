@@ -268,4 +268,69 @@ class WxComponentService
         return $ComponentVerifyTicket;
     }
 
+    /**
+     * 代公众号发起网页授权 oauth 授权跳转接口
+     * @param $appId 公众号appId
+     * @param $callback 跳转URL
+     * @param string $state 状态信息，最多128字节
+     * @param string $scope 授权作用域 snsapi_base或者snsapi_userinfo 或者 snsapi_base,snsapi_userinfo
+     * @return string
+     */
+    public function getOauthRedirect($appId, $callback, $state = '', $scope = 'snsapi_base')
+    {
+        return $this->getWxComponent()->getOauthRedirect($appId, $callback, $state, $scope);
+    }
+
+    /**
+     * 代公众号发起网页授权 回调URL时，通过code获取Access Token
+     * @return array {access_token,expires_in,refresh_token,openid,scope}
+     */
+    public function getOauthAccessTokenForCode($appId)
+    {
+        $ret = $this->getWxComponent()->getOauthAccessToken($appId, $this->getComponentAccessTocken());
+        if ($ret) {
+            $authName = "wxComponentOauthToken" . $this->wxComponentAppId . "_" . $appId;
+            $this->cache->setCache($authName, $ret['access_token'], $ret['expires_in']);
+            $authName = "wxComponentOauthRefreshToken" . $this->wxComponentAppId . "_" . $appId;
+            $this->cache->setCache($authName, $ret['refresh_token'], 30 * 24 * 2600); // refresh_token30天有效期
+        }
+        return $ret;
+    }
+
+    /**
+     * 代公众号发起网页授权 获取缓存的accessToken，如果为缓存没有，则通过刷新token重新获取
+     * @param $appId
+     * @return bool|string
+     */
+    public function getOauthAccessToken($appId)
+    {
+        $authName = "wxComponentOauthToken" . $this->wxComponentAppId . "_" . $appId;
+        $accessToken = $this->cache->getCache($authName);
+        if ($accessToken) return $accessToken;
+
+        $authName = "wxComponentOauthRefreshToken" . $this->wxComponentAppId . "_" . $appId;
+        $refreshToken = $this->cache->getCache($authName);
+        if (!$refreshToken) return false;
+
+        $ret = $this->getWxComponent()->getOauthRefreshToken($appId, $refreshToken, $this->getComponentAccessTocken());
+        if ($ret) {
+            $authName = "wxComponentOauthToken" . $this->wxComponentAppId . "_" . $appId;
+            $this->cache->setCache($authName, $ret['access_token'], $ret['expires_in']);
+            $authName = "wxComponentOauthRefreshToken" . $this->wxComponentAppId . "_" . $appId;
+            $this->cache->setCache($authName, $ret['refresh_token'], 30 * 24 * 2600); // refresh_token30天有效期
+        }
+        return $ret['access_token'];
+    }
+
+    /**
+     * 获取授权后的用户资料
+     * @param string $accessToken
+     * @param string $openid
+     * @return array {openid,nickname,sex,province,city,country,headimgurl,privilege,[unionid]}
+     * 注意：unionid字段 只有在用户将公众号绑定到微信开放平台账号后，才会出现。建议调用前用isset()检测一下
+     */
+    public function  getOauthUserinfo($accessToken, $openid)
+    {
+        return $this->getWxComponent()->getOauthUserinfo($accessToken, $openid);
+    }
 }

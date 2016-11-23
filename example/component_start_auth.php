@@ -11,7 +11,7 @@ $wxComponentConfig = $cfg_arr[0];
 
 $wxComponentService = new WxComponentService($wxComponentConfig,new FileCache($GLOBALS['cacheDir']));
 $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-$url_path = substr($url,strrpos($url,"/"));
+$url_path = substr($url,0,strrpos($url,"/"));
 $redirectUrl = $url_path."/component_auth_cb.php?param1=param1value";
 $auth_cb_url = $wxComponentService->getAuthorizeUrl($redirectUrl);
 ?>
