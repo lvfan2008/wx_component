@@ -16,3 +16,4 @@ wx_component 是根据[微信官方开放平台](https://open.weixin.qq.com/)提
 ## LICENSE
 
 [MIT](https://opensource.org/licenses/MIT)，尽情享受开源代码。
+
