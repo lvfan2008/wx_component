@@ -186,10 +186,9 @@ class WxComponentService
             return $_ins[$appId];
         }
         $cfg = $GLOBALS['wxComponentCfg'][$this->wxComponentAppId];
-        $componentAccessToken = $this->getComponentAccessTocken();
         $appAccessToken = $this->getAppAccessToken($appId);
         $Wechat2_options = array(
-            'token' => $componentAccessToken,
+            'token' => $cfg['token'],
             'encodingaeskey' => $cfg['encodingAesKey'],
             'appid' => $cfg['component_appid'],
             'appsecret' => $cfg['component_appsecret'],

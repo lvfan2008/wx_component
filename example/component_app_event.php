@@ -64,7 +64,6 @@ function get_wx_config()
                 }
             }
             if ($appId) {
-                $wxComponentConfig = $GLOBALS['wxComponentConfig'][$appId];
                 return array('component_cfg' => $wxComponentConfig, 'app_id' => $appId);
             }
         }
