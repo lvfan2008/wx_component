@@ -1,6 +1,6 @@
 <?php
 /**
- * 微信配置文件
+ * 微信配置文件，请确认当前目录具有写权限。
  * @author  lv_fan2008@sina.com
  */
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
