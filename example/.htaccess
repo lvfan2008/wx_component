@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+<IfModule mod_env.c>
+SetEnv HTTP_MOD_REWRITE On
+</IfModule>
+
+RewriteEngine On
+RewriteRule appevent/(.*) component_app_event.php [L]
+
+</IfModule>
