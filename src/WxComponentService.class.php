@@ -185,7 +185,7 @@ class WxComponentService
         if (isset($_ins[$appId])) {
             return $_ins[$appId];
         }
-        $cfg = $GLOBALS['wxComponentCfg'][$this->wxComponentAppId];
+        $cfg = $this->wxComponentConfig;;
         $appAccessToken = $this->getAppAccessToken($appId);
         $Wechat2_options = array(
             'token' => $cfg['token'],
