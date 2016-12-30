@@ -4,6 +4,7 @@ SetEnv HTTP_MOD_REWRITE On
 </IfModule>
 
 RewriteEngine On
-RewriteRule appevent/(.*) component_app_event.php [L]
+RewriteRule . - [E=REWRITEBASE:/example/]
+RewriteRule appevent/(.*) %{ENV:REWRITEBASE}component_app_event.php [L]
 
 </IfModule>
