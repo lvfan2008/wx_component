@@ -296,7 +296,7 @@ class WxComponent
             $dec_msg = "";
             $postStr = file_get_contents("php://input");
             if (!$postStr) $postStr = $GLOBALS['HTTP_RAW_POST_DATA'];
-            file_put_contents(dirname(__FILE__) . "/post_str.txt", "poststr:" . $postStr);
+            if (!$postStr) return false;
             $pc = new WXBizMsgCrypt($this->token, $this->encodingAesKey, $this->component_appid);
             $ret = $pc->decryptMsg($_GET['msg_signature'], $_GET['timestamp'], $_GET['nonce'], $postStr, $dec_msg);
             if ($ret === 0) {
@@ -464,8 +464,10 @@ class WxComponent
         $aStatus = curl_getinfo($oCurl);
         curl_close($oCurl);
         if (intval($aStatus["http_code"]) == 200) {
+            $this->log("wxcomponent http_post recv:" . $sContent);
             return $sContent;
         } else {
+            $this->log("wxcomponent http_post recv error {$url}, param:{$param} aStatus:" . print_r($aStatus, true));
             return false;
         }
     }

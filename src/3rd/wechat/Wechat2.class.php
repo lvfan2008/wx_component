@@ -1217,8 +1217,10 @@ class Wechat2
         $aStatus = curl_getinfo($oCurl);
         curl_close($oCurl);
         if (intval($aStatus["http_code"]) == 200) {
+            $this->log("wechat http_post recv:" . $sContent);
             return $sContent;
         } else {
+            $this->log("wechat http_post recv error {$url}, param:{$param} aStatus:" . print_r($aStatus, true));
             return false;
         }
     }

@@ -18,6 +18,9 @@ log_ex('wx_auth_msg', " cfg:" . print_r($cfg, true));
 $wxComponentService = new WxComponentService($wxComponentConfig, new FileCache($GLOBALS['cacheDir']));
 $appId = $cfg['app_id'];
 
+$wxComponentService->getWxComponent()->debug = true;
+$wxComponentService->getWxComponent()->logcallback = "log_wechat";
+
 // 如果为全网发布接入检测的专用测试公众号，转入自动化测试代码
 if ($appId == 'wx570bc396a51b8ff8') {
     test_auto_case($wxComponentService, $appId);
@@ -123,6 +126,7 @@ function test_auto_case(&$wxComponentService, $appId)
         log_ex('wx_auth_msg', "appId:{$appId}, not valid authroized appId param:" . print_r($_GET, true));
         die('no access');
     }
+
     $weObj->debug = true;
     $weObj->logcallback = "log_wechat";
     $ret = $weObj->valid(true);
