@@ -34,8 +34,10 @@ $weObj = $wxComponentService->getWechat($appId);
 if (!$weObj) {
     log_ex('wx_auth_msg', "appId:{$appId}, not valid authroized appId param:" . print_r($_GET, true));
     die('no access');
-    return false;
 }
+
+$weObj->debug = true;
+$weObj->logcallback = "log_wechat";
 
 $ret = $weObj->valid(true);
 if ($ret === false) {
@@ -46,8 +48,9 @@ if ($ret === false) {
     die($ret);
 }
 $weObj->getRev();
-log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevData());
+log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevContent());
 $weObj->text("success")->reply('', true); // 简单测试回复success
+log_ex('wx_auth_msg', "echo success");
 
 
 /**
@@ -98,6 +101,11 @@ function is_https()
     return FALSE;
 }
 
+function log_wechat($msg)
+{
+    log_ex("log_wechat", $msg);
+}
+
 /**
  * 全网发布接入检测自动化测试代码
  * @param WxComponentService $wxComponentService
@@ -105,7 +113,18 @@ function is_https()
  */
 function test_auto_case(&$wxComponentService, $appId)
 {
+    if (!$wxComponentService->isValidAuthorizedAppId($appId)) { // 判断公众号授权是否有效
+        log_ex('wx_auth_msg', "appId:{$appId}, not valid authroized appId param:" . print_r($_GET, true));
+        die('no access');
+    }
+
     $weObj = $wxComponentService->getWechat($appId);
+    if (!$weObj) {
+        log_ex('wx_auth_msg', "appId:{$appId}, not valid authroized appId param:" . print_r($_GET, true));
+        die('no access');
+    }
+    $weObj->debug = true;
+    $weObj->logcallback = "log_wechat";
     $ret = $weObj->valid(true);
     if ($ret === false) {
         log_ex('wx_auth_msg', "appId:{$appId}, auth valid failed! param:" . print_r($_GET, true) . " weObj:" . print_r($weObj, true));
@@ -115,7 +134,7 @@ function test_auto_case(&$wxComponentService, $appId)
         die($ret);
     }
     $weObj->getRev();
-    log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevData());
+    log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevContent());
 
     if ($weObj->getRevType() == Wechat2::MSGTYPE_TEXT) {
         $recv_txt = $weObj->getRevContent();
