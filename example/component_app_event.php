@@ -5,7 +5,7 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/wx_component/WxComponentService.class.php";
+include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
 
 $cfg = get_wx_config();
 if (!$cfg) {
