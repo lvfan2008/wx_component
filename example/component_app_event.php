@@ -5,7 +5,7 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
+include_once dirname(dirname(__FILE__)) . "/wx_component/WxComponentService.class.php";
 
 $cfg = get_wx_config();
 if (!$cfg) {
@@ -13,6 +13,8 @@ if (!$cfg) {
 }
 
 $wxComponentConfig = $cfg['component_cfg'];
+log_ex('wx_auth_msg', " cfg:" . print_r($cfg, true));
+
 $wxComponentService = new WxComponentService($wxComponentConfig, new FileCache($GLOBALS['cacheDir']));
 $appId = $cfg['app_id'];
 
@@ -23,10 +25,21 @@ if ($appId == 'wx570bc396a51b8ff8') {
 }
 
 // 正常业务处理
+if (!$wxComponentService->isValidAuthorizedAppId($appId)) { // 判断公众号授权是否有效
+    log_ex('wx_auth_msg', "appId:{$appId}, not valid authroized appId param:" . print_r($_GET, true));
+    die('no access');
+}
+
 $weObj = $wxComponentService->getWechat($appId);
+if (!$weObj) {
+    log_ex('wx_auth_msg', "appId:{$appId}, not valid authroized appId param:" . print_r($_GET, true));
+    die('no access');
+    return false;
+}
+
 $ret = $weObj->valid(true);
 if ($ret === false) {
-    log_ex('wx_auth_msg', "appId:{$appId}, auth valid failed! param:" . print_r($_GET, true));
+    log_ex('wx_auth_msg', "appId:{$appId}, auth valid failed! param:" . print_r($_GET, true) . " weObj:" . print_r($weObj, true));
     die('no access');
 } else if ($ret !== true) {
     log_ex('wx_auth_msg', "appId:{$appId}, only die echostr:" . $ret);
@@ -95,14 +108,14 @@ function test_auto_case(&$wxComponentService, $appId)
     $weObj = $wxComponentService->getWechat($appId);
     $ret = $weObj->valid(true);
     if ($ret === false) {
-        log_ex('wx_auth_msg', "appId:{$appId}, auth valid failed! param:" . print_r($_GET, true));
+        log_ex('wx_auth_msg', "appId:{$appId}, auth valid failed! param:" . print_r($_GET, true) . " weObj:" . print_r($weObj, true));
         die('no access');
     } else if ($ret !== true) {
         log_ex('wx_auth_msg', "appId:{$appId}, only die echostr:" . $ret);
         die($ret);
     }
     $weObj->getRev();
-    log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevContent());
+    log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevData());
 
     if ($weObj->getRevType() == Wechat2::MSGTYPE_TEXT) {
         $recv_txt = $weObj->getRevContent();

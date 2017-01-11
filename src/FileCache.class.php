@@ -24,7 +24,7 @@ class FileCache extends BaseCache
     public function setCache($cacheName, $cacheValue, $expireIn)
     {
         $filePath = $this->cacheDir . $cacheName;
-        $arr = ['v' => $cacheValue, 'et' => time() + $expireIn];
+        $arr = ['v' => $cacheValue, 'et' => time() + $expireIn - 60];
         if ($expireIn == -1) $arr['et'] = -1;
         file_put_contents($filePath, json_encode($arr));
     }
@@ -50,6 +50,6 @@ class FileCache extends BaseCache
     public function removeCache($cacheName)
     {
         $filePath = $this->cacheDir . $cacheName;
-        if (!file_exists($filePath)) @unlink($filePath);
+        if (file_exists($filePath)) @unlink($filePath);
     }
 }

@@ -164,10 +164,18 @@ class WxComponentService
                     $this->cache->setCache($authName, $ret['ComponentVerifyTicket'], -1);
                     break;
                 case "unauthorized":
+                    // 移除授权缓存
+                    $authName = "wxAppAccessToken" . $this->wxComponentAppId . "_" . $ret['AuthorizerAppid'];
+                    $this->cache->removeCache($authName);
+
+                    $authName = "wxAppRefreshToken" . $this->wxComponentAppId . "_" . $ret['AuthorizerAppid'];
+                    $this->cache->removeCache($authName);
                     break;
                 case "authorized":
+                    $this->authorizeCallbackProcess($ret['AuthorizationCode'], $ret['AuthorizationCodeExpiredTime']);
                     break;
                 case "updateauthorized":
+                    $this->authorizeCallbackProcess($ret['AuthorizationCode'], $ret['AuthorizationCodeExpiredTime']);
                     break;
             }
         }
@@ -187,6 +195,8 @@ class WxComponentService
         }
         $cfg = $this->wxComponentConfig;;
         $appAccessToken = $this->getAppAccessToken($appId);
+        if (!$appAccessToken) return false;
+
         $Wechat2_options = array(
             'token' => $cfg['token'],
             'encodingaeskey' => $cfg['encodingAesKey'],
@@ -196,6 +206,16 @@ class WxComponentService
         );
         $_ins[$appId] = new Wechat2($Wechat2_options);
         return $_ins[$appId];
+    }
+
+    /**
+     * 判断是否授权公众号是否有效，如果授权过期或者公众号取消授权，则返回false。
+     * @param $appId 授权的公众号
+     * @return bool|string
+     */
+    public function isValidAuthorizedAppId($appId)
+    {
+        return $this->getAppAccessToken($appId);
     }
 
     /**
@@ -212,6 +232,7 @@ class WxComponentService
 
         $authName = "wxAppRefreshToken" . $this->wxComponentAppId . "_" . $appId;
         $appRefreshToken = $this->cache->getCache($authName);
+        if (!$appRefreshToken) return false;
         $refreshTokenInfo = $this->getWxComponent()->get_wx_access_token($componentAccessToken, $appId, $appRefreshToken);
         if (!$refreshTokenInfo) {
             return false;
