@@ -7,8 +7,12 @@
 include_once "config.php";
 include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
 
+$url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+log_ex('wx_auth_msg', "component_app_event enter: url:{$url}");
+
 $cfg = get_wx_config();
 if (!$cfg) {
+    log_ex('wx_auth_msg', "get_wx_config failed!");
     die("no access!");
 }
 
@@ -18,6 +22,7 @@ log_ex('wx_auth_msg', " cfg:" . print_r($cfg, true));
 $wxComponentService = new WxComponentService($wxComponentConfig, new FileCache($GLOBALS['cacheDir']));
 $appId = $cfg['app_id'];
 
+// debug模式，会记录一些日志，正式的时候，可以去掉。
 $wxComponentService->getWxComponent()->debug = true;
 $wxComponentService->getWxComponent()->logcallback = "log_wechat";
 
@@ -39,6 +44,7 @@ if (!$weObj) {
     die('no access');
 }
 
+// debug模式，会记录一些日志，正式的时候，可以去掉。
 $weObj->debug = true;
 $weObj->logcallback = "log_wechat";
 
@@ -51,7 +57,7 @@ if ($ret === false) {
     die($ret);
 }
 $weObj->getRev();
-log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevContent());
+log_ex('wx_auth_msg', "appId:{$appId} receive data:" . print_r($weObj->getRevData(),true));
 $weObj->text("success")->reply('', true); // 简单测试回复success
 log_ex('wx_auth_msg', "echo success");
 
@@ -127,8 +133,10 @@ function test_auto_case(&$wxComponentService, $appId)
         die('no access');
     }
 
+    // debug模式，会记录一些日志，正式的时候，可以去掉。
     $weObj->debug = true;
     $weObj->logcallback = "log_wechat";
+
     $ret = $weObj->valid(true);
     if ($ret === false) {
         log_ex('wx_auth_msg', "appId:{$appId}, auth valid failed! param:" . print_r($_GET, true) . " weObj:" . print_r($weObj, true));
@@ -138,7 +146,7 @@ function test_auto_case(&$wxComponentService, $appId)
         die($ret);
     }
     $weObj->getRev();
-    log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevContent());
+    log_ex('wx_auth_msg', "appId:{$appId} receive data:" . print_r($weObj->getRevData(),true));
 
     if ($weObj->getRevType() == Wechat2::MSGTYPE_TEXT) {
         $recv_txt = $weObj->getRevContent();
