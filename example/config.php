@@ -33,3 +33,16 @@ function log_ex($filename, $msg)
     $file_path .= $filename;
     file_put_contents($file_path, date("Y-m-d H:i:s") . "\t" . $msg . "\n", FILE_APPEND);
 }
+
+// error handler function
+function error_handler($errno, $errstr, $errfile, $errline)
+{
+//    if (!(error_reporting() & $errno)) {
+//        // This error code is not included in error_reporting
+//        return;
+//    }
+    log_ex("error_msg", "errno:{$errno},errstr:{$errstr}, errfile:{$errfile}, errline:{$errline}");
+    return true;
+}
+
+set_error_handler("error_handler");
