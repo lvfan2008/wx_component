@@ -102,7 +102,7 @@ function test_auto_case(&$wxComponentService, $appId)
         die($ret);
     }
     $weObj->getRev();
-    log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevData());
+    log_ex('wx_auth_msg', "appId:{$appId} receive data:" . $weObj->getRevContent());
 
     if ($weObj->getRevType() == Wechat2::MSGTYPE_TEXT) {
         $recv_txt = $weObj->getRevContent();
