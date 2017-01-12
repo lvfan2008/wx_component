@@ -18,17 +18,23 @@ wx_component 是根据[微信官方开放平台](https://open.weixin.qq.com/)提
     * 公众号消息与事件接收URL:http://www.xxx.com/example/appevent/$APPID$
     * 根据需要配置其他参数
 5. 把配置的第三方平台参数配置/example/config.php
-6. 配置完成后，进行全网发布接入检测。
+6. 配置完成后，等待component_verify_ticket消息（10分钟1次）到来后，进行全网发布接入检测。
 7. 如果不成功，检查以下几项
     * 检查/example/目录是否可写
     * 检查/example/cache/目录的日志文件，查看原因
     * 检查apache rewrite模块是否开启，是否支持.htaccess
 8. 发布成功后，用浏览器打开example的php样例，检测授权、js_sdk功能。
 
+## 我的测试环境
+1. 使用的是阿里云主机
+2. 操作系统为Debian 8.0 64Bits
+3. Apache/2.4.10 (Debian) PHP 5.6.27
+4. php扩展模块有curl openssl
+
 ## 建议和疑问
 
 如果你有好的建议或者疑问，欢迎给我提issue或pull request，或者发邮件到lv_fan2008@sina.com 。
-也可以加入到群519270384进行讨论。
+也可以加入到QQ群519270384进行讨论。
 
 ## LICENSE
 
