@@ -21,6 +21,19 @@ $GLOBALS['wxComponentConfig'] = [
 ];
 $GLOBALS['cacheDir'] = dirname(__FILE__) . "/cache/";
 
+// 用于测试的认证服务号支付配置信息，可以替换为自己的测试的支付配置
+$GLOBALS['wxTestPayCfg'] = array(
+    'AppId' => 'wx426b3015555a46be', /* 服务号AppId */
+    'wx_v3_key' => '8934e7d15453e97507ef794cf7b0519d', /* 商户号支付密钥 */
+    'wx_v3_mhcid' => '1900009851', /* 支付商户号 */
+    'wx_v3_apiclient_cert_path' => dirname(__FILE__) . "/cert/apiclient_cert.pem",  /* 商户证书路径 */
+    'wx_v3_apiclient_key_path' => dirname(__FILE__) . "/cert/apiclient_key.pem",  /* 商户证书私钥路径 */
+);
+
+if (file_exists(dirname(__FILE__) . '/online_cfg.php'))
+    include_once dirname(__FILE__) . '/online_cfg.php';
+
+
 /**
  * 当前目录的cache目录记录日志
  * @param $filename
@@ -37,10 +50,10 @@ function log_ex($filename, $msg)
 // error handler function
 function error_handler($errno, $errstr, $errfile, $errline)
 {
-//    if (!(error_reporting() & $errno)) {
-//        // This error code is not included in error_reporting
-//        return;
-//    }
+    if (!(error_reporting() & $errno)) {
+        // This error code is not included in error_reporting
+        return;
+    }
     log_ex("error_msg", "errno:{$errno},errstr:{$errstr}, errfile:{$errfile}, errline:{$errline}");
     return true;
 }

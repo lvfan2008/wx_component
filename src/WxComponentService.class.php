@@ -343,6 +343,24 @@ class WxComponentService
     }
 
     /**
+     * 代公众号发起网页授权，取得openid
+     * @param $appId
+     * @param $callbackUrl 网页回调URL
+     * @return bool|string
+     */
+    public function getOauthOpenId($appId, $callbackUrl = null)
+    {
+        if (!isset($_GET['code'])) {
+            $url = $this->getOauthRedirect($appId, $callbackUrl);
+            header("Location: {$url}");
+            exit;
+        } else {
+            $authInfo = $this->getOauthAccessTokenForCode($appId);
+            return $authInfo['openid'];
+        }
+    }
+
+    /**
      * 获取授权后的用户资料
      * @param string $accessToken
      * @param string $openid
