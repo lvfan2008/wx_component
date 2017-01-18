@@ -2,8 +2,8 @@
 include_once "3rd/WxpayAPI_php_v3/lib/WxPay.Api.php";
 
 /**
- * Description
- * @author lixinguo@vpubao.com
+ * 实现微信支付相关
+ * @author lv_fan2008@sina.com
  * @date 2017/1/16
  */
 class WxPayNotifyCb extends WxPayNotify
