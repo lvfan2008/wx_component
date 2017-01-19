@@ -24,7 +24,7 @@ function payNotifyFunc($data, &$msg)
 {
     log_ex("pay_notify", print_r($data, true) . "\nmsg:{$msg}");
     if ($GLOBALS['wxTestPayCfg']['AppId'] == $data['appid']) {
-        $ret = WxPay::checkSign($GLOBALS['payCfg'], $data);
+        $ret = WxPay::checkSign($GLOBALS['wxTestPayCfg'], $data);
         if ($ret) {
             log_ex("pay_notify", "checkSign OK");
             return true;
