@@ -242,7 +242,7 @@ class WxComponentService
         $this->cache->setCache($authName, $refreshTokenInfo['authorizer_access_token'], $refreshTokenInfo['expires_in']);
 
         $authName = "wxAppRefreshToken" . $this->wxComponentAppId . "_" . $appId;
-        $this->cache->setCache($authName, $refreshTokenInfo['authorizer_refresh_token'], $refreshTokenInfo['expires_in']);
+        $this->cache->setCache($authName, $refreshTokenInfo['authorizer_refresh_token'], -1);
         return $refreshTokenInfo['authorizer_access_token'];
     }
 
