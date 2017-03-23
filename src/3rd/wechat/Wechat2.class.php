@@ -1385,7 +1385,7 @@ class Wechat2
             $this->jsapi_ticket = $json['ticket'];
             $expire = $json['expires_in'] ? intval($json['expires_in']) - 100 : 3600;
             $this->setCache($authname, $this->jsapi_ticket, $expire);
-            return $this->jsapi_ticket;
+            return $json;
         }
         return false;
     }
@@ -1427,7 +1427,7 @@ class Wechat2
     }
 
     /**
-     * 获取卡券签名cardSign
+     * 拉取适用卡券列表的签名包
      * @param string $card_type 卡券的类型，不可为空，官方jssdk文档说这个值可空，但签名验证工具又必填这个值，官方文档到处是坑，
      * @param string $card_id 卡券的ID，可空
      * @param string $location_id 卡券的适用门店ID，可空
@@ -1436,14 +1436,15 @@ class Wechat2
      * @param string $appid 用于多个appid时使用,可空
      * @return array|bool 返回签名字串
      */
-    public function getCardSign($card_type = '', $card_id = '', $code = '', $location_id = '', $timestamp = 0, $noncestr = '', $appid = '')
+    public function getCardSign($card_type = '', $card_id = '', $code = '', $location_id = '', $appid = '', $timestamp = 0, $noncestr = '')
     {
         if (!$this->api_ticket && !$this->getJsCardTicket($appid)) return false;
+        if (!$appid) $appid = $this->appid;
         if (!$timestamp)
             $timestamp = time();
         if (!$noncestr)
             $noncestr = $this->generateNonceStr();
-        $arrdata = array("api_ticket" => $this->api_ticket, "app_id" => $this->appid, "card_id" => $card_id, "code" => $code, "card_type" => $card_type, "location_id" => $location_id, "timestamp" => $timestamp, "noncestr" => $noncestr);
+        $arrdata = array("api_ticket" => $this->api_ticket, "app_id" => $appid, "card_id" => $card_id, "code" => $code, "card_type" => $card_type, "location_id" => $location_id, "timestamp" => $timestamp, "noncestr" => $noncestr);
         $sign = $this->getTicketSignature($arrdata);
         if (!$sign)
             return false;
@@ -1458,6 +1459,16 @@ class Wechat2
         return $signPackage;
     }
 
+    /**
+     * 添加卡券的签名信息
+     * @param string $card_id
+     * @param string $code
+     * @param int $timestamp
+     * @param string $noncestr
+     * @param string $openid
+     * @param string $balance
+     * @return array|bool
+     */
     public function getAddCardSign($card_id = '', $code = '', $timestamp = 0, $noncestr = '', $openid = '', $balance = '')
     {
         if (!$this->api_ticket && !$this->getJsCardTicket()) return false;
@@ -1470,7 +1481,6 @@ class Wechat2
         if (!$sign)
             return false;
         $signPackage = array(
-            "cardId" => $card_id,
             "nonceStr" => $noncestr,
             "timestamp" => $timestamp,
             "cardSign" => $sign,
@@ -1580,7 +1590,7 @@ class Wechat2
             $this->api_ticket = $json['ticket'];
             $expire = $json['expires_in'] ? intval($json['expires_in']) - 100 : 3600;
             $this->setCache($authname, $this->api_ticket, $expire);
-            return $this->api_ticket;
+            return $json;
         }
         return false;
     }

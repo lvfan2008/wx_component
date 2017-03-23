@@ -367,7 +367,7 @@ class WxComponentService
      * @return array {openid,nickname,sex,province,city,country,headimgurl,privilege,[unionid]}
      * 注意：unionid字段 只有在用户将公众号绑定到微信开放平台账号后，才会出现。建议调用前用isset()检测一下
      */
-    public function  getOauthUserinfo($accessToken, $openid)
+    public function getOauthUserinfo($accessToken, $openid)
     {
         return $this->getWxComponent()->getOauthUserinfo($accessToken, $openid);
     }
@@ -403,6 +403,104 @@ class WxComponentService
         if ($jsTicket) return $jsTicket;
         $weObj = $this->getWechat($appId);
         $json = $weObj->getJsTicket2($appId);
+        if ($json) {
+            $this->cache->setCache($authName, $json['ticket'], $json['expires_in']);
+            return $json['ticket'];
+        }
+        return false;
+    }
+
+    /**
+     * 获取拉取适用卡券列表的签名包 用于js sdk 的 wx.chooseCard
+     * @param string $appId 公众号appid
+     * @param string $card_type 卡券的类型，不可为空，官方jssdk文档说这个值可空，但签名验证工具又必填这个值，官方文档到处是坑，
+     *      GROUPON团购券  CASH代金券 DISCOUNT折扣券 GIFT 优惠券 GENERAL_COUPON  MEMBER_CARD
+     * @param string $card_id 卡券的ID，可空
+     * @param string $code 卡券自定义code
+     * @param string $location_id 卡券的适用门店ID，可空
+     * @return array|bool
+     *
+     * wx.chooseCard({
+     * shopId: '', // 门店Id
+     * cardType: '', // 卡券类型
+     * cardId: '', // 卡券Id
+     * timestamp: 0, // 卡券签名时间戳
+     * nonceStr: '', // 卡券签名随机串
+     * signType: '', // 签名方式，默认'SHA1'
+     * cardSign: '', // 卡券签名
+     * success: function (res) {
+     * var cardList= res.cardList; // 用户选中的卡券列表信息
+     * }
+     * });
+     */
+    public function getChooseCardSign($appId, $card_type = '', $card_id = '', $code = '', $location_id = '')
+    {
+        $jsCardTicket = $this->getJsCardTicket($appId);
+        if ($jsCardTicket) {
+            $weObj = $this->getWechat($appId);
+            $weObj->api_ticket = $jsCardTicket;
+            $signPackage = $weObj->getCardSign($card_type, $card_id, $code, $location_id, $appId);
+            return $signPackage;
+        }
+        return false;
+    }
+
+    /**
+     * 获取添加卡券的签名信息 用于js sdk的wx.addCard
+     * @param string $appId 公众号appid
+     * @param string $card_id 卡券的ID，可空
+     * @param string $code 卡券自定义code
+     * @param string $openid 用户openid
+     * @param string $balance 用户余额
+     * @return array|bool
+     *
+     * wx.addCard({
+     *    cardList: [{
+     *    cardId: '',
+     *    cardExt: ''
+     *    }], // 需要添加的卡券列表
+     *    success: function (res) {
+     *    var cardList = res.cardList; // 添加的卡券列表信息
+     *    }
+     *    });
+     */
+    public function getAddCardExt($appId, $card_id = '', $code = '', $openid = '', $balance = '')
+    {
+        $jsCardTicket = $this->getJsCardTicket($appId);
+        if ($jsCardTicket) {
+            $weObj = $this->getWechat($appId);
+            $weObj->api_ticket = $jsCardTicket;
+            $timestamp = 0;
+            $nonceStr = '';
+            $signPackage = $weObj->getAddCardSign($card_id, $code, $timestamp, $nonceStr, $openid, $balance);
+            $ext = array(
+                'code' => $code,
+                'openid' => $openid,
+                'timestamp' => strval($signPackage['timestamp']),
+                'signature' => $signPackage['cardSign'],
+                'nonce_str' => strval($signPackage['nonceStr']),
+            );
+            return $ext;
+        }
+        return false;
+    }
+
+
+    /**
+     * 代替公众号使用卡券时，获取卡券ticket
+     * @param $appId
+     * @return bool
+     */
+    public function getJsCardTicket($appId)
+    {
+        $authName = "wxComponentJsCardTicket" . $this->wxComponentAppId . "_" . $appId;
+        $jsCardTicket = $this->cache->getCache($authName);
+        if ($jsCardTicket) return $jsCardTicket;
+        $weObj = $this->getWechat($appId);
+        if (!$weObj) {
+            return false;
+        }
+        $json = $weObj->getJsCardTicket($appId);
         if ($json) {
             $this->cache->setCache($authName, $json['ticket'], $json['expires_in']);
             return $json['ticket'];
