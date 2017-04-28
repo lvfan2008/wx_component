@@ -5,9 +5,8 @@
  * @date 2017/3/23
  */
 
-include_once dirname(dirname(__FILE__)) . "config.php";
-include_once dirname(dirname(dirname(__FILE__))) . "/src/WxComponentService.class.php";
-include_once dirname(dirname(dirname(__FILE__))) . "/src/WxPay.class.php";
+include_once __DIR__ . "/../config.php";
+include_once __DIR__ . "/../bootstrap.php";
 include_once "JsSdkDemo.class.php";
 
 $cfg_arr = array_values($GLOBALS['wxComponentConfig']);

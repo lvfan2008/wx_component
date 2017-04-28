@@ -5,11 +5,12 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
+include_once "bootstrap.php";
+
 $cfg_arr = array_values($GLOBALS['wxComponentConfig']);
 $wxComponentConfig = $cfg_arr[0];
 
-$appId = "wxd00b671bf4239248"; // 改为自己授权的认证服务号appId
+$appId = "wxb3195565de409776"; // 改为自己授权的认证服务号appId
 $wxComponentService = new WxComponentService($wxComponentConfig,new FileCache($GLOBALS['cacheDir']));
 if(isset($_GET['code']) && $_GET['state'] == 'fromoauth'){
     log_ex("component_oauth","get:".print_r($_GET,true));
@@ -24,7 +25,7 @@ if(isset($_GET['code']) && $_GET['state'] == 'fromoauth'){
     }
     exit;
 }else{
-    $appId = "wxd00b671bf4239248";; // 改为自己授权的认证服务号appId
+    $appId = "wxb3195565de409776";; // 改为自己授权的认证服务号appId
     $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     $url_path = substr($url,0,strrpos($url,"/"));
     $redirectUrl = $url_path."/component_oauth.php";

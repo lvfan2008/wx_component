@@ -1,0 +1,30 @@
+{
+    "name":         "lv_fan2008/wx_component",
+    "version":	    "2.0.2"
+    "description":  "weixin open platform third sdk.",
+    "keywords": [
+            "wx_component",
+            "wechat-open-sdk",
+            "weixin"
+        ],
+    "license":      "MIT",
+    "type":         "library",
+    "authors": [
+            {
+                "name":     "lv_fan2008",
+                "email":    "lv_fan2008@sina.com",
+                "homepage": "http://weixin.yunyicheng.com"
+            }
+        ],
+    "support": {
+        "issues":   "https://github.com/lvfan2008/wx_component/issues",
+        "email":    "lv_fan2008@sina.com",
+        "source":   "https://github.com/lvfan2008/wx_component"
+    },
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "files": ["src/WxComponentService.class.php","src/WxPay.class.php","src/WxLogin.class.php"]
+    }
+}

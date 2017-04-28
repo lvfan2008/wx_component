@@ -5,7 +5,8 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
+include_once "bootstrap.php";
+
 $cfg_arr = array_values($GLOBALS['wxComponentConfig']);
 $wxComponentConfig = $cfg_arr[0];
 

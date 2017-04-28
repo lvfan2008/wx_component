@@ -402,6 +402,7 @@ class WxComponentService
         $jsTicket = $this->cache->getCache($authName);
         if ($jsTicket) return $jsTicket;
         $weObj = $this->getWechat($appId);
+        if (!$weObj) return false;
         $json = $weObj->getJsTicket2($appId);
         if ($json) {
             $this->cache->setCache($authName, $json['ticket'], $json['expires_in']);

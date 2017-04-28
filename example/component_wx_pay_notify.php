@@ -5,8 +5,7 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxPay.class.php";
+include_once "bootstrap.php";
 
 log_ex("pay_notify", "notify call enter.");
 

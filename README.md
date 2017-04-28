@@ -26,6 +26,7 @@ wx_component 2.0 增加了代公众号实现对微信支付的支持
     * 微信对账单下载
 7. 增加微信开放平台网站应用微信扫码登录支持
 8. 增加微信开放平台官方JS SDK DEMO的整体实现
+9. 增加对composer的支持
 
 ## 简单使用说明
 1. 假设配置网站根目录为/data/wx_component/
@@ -42,6 +43,7 @@ wx_component 2.0 增加了代公众号实现对微信支付的支持
     * 检查/example/cache/目录的日志文件，查看原因
     * 检查apache rewrite模块是否开启，是否支持.htaccess
 8. 发布成功后，用浏览器打开example的php样例，检测授权、js_sdk功能。
+
 
 ## 我的测试环境
 1. 使用的是阿里云主机

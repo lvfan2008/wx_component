@@ -5,8 +5,7 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
-
+include_once "bootstrap.php";
 
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-Type: text/html; charset=utf-8');

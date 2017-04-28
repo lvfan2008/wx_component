@@ -6,6 +6,8 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 date_default_timezone_set('Asia/Shanghai');
 
+$GLOBALS['is_composer_autoload'] = false; // 是否使用composer安装，如果使用，请改为true
+
 /**
  * 微信公众号第三方平台配置信息
  */
@@ -15,8 +17,8 @@ $GLOBALS['wxComponentConfig'] = [
         'component_appsecret' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', /* 平台AppSecret */
         'encodingAesKey' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', /* 平台授权后公众号消息加解密Key */
         'token' => 'xxxxxxxxxxxxx', /* 平台公众号消息校验Token */
-        'receive_component_event_url' => 'http://www.xxx.com/example/component_event.php', /* 平台授权公众号消息与事件接收URL */
-        'receive_app_event_url' => 'http://www.xxx.com/example/appevent/$APPID$' /* 平台授权事件接收URL,需要rewrite到component_app_event.php */
+        'receive_component_event_url' => 'http://www.xxx.com/example/component_event.php', /* 平台授权事件接收URL */
+        'receive_app_event_url' => 'http://www.xxx.com/example/appevent/$APPID$' /* 公众号消息与事件接收URL,需要rewrite到component_app_event.php */
     ],
 ];
 $GLOBALS['cacheDir'] = dirname(__FILE__) . "/cache/";

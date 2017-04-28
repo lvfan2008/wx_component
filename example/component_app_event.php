@@ -5,7 +5,7 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
+include_once "bootstrap.php";
 
 $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 log_ex('wx_auth_msg', "component_app_event enter: url:{$url}");

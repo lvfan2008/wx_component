@@ -5,12 +5,13 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
+include_once "bootstrap.php";
+
 $cfg_arr = array_values($GLOBALS['wxComponentConfig']);
 $wxComponentConfig = $cfg_arr[0];
 
 $wxComponentService = new WxComponentService($wxComponentConfig, new FileCache($GLOBALS['cacheDir']));
-$appId = "wx19134b98d4e873a5"; // 改为自己授权过的认证服务号appId
+$appId = "wxb3195565de409776"; // 改为自己授权过的认证服务号appId
 $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; // 当前URL
 $signPackage = $wxComponentService->getJsSign($appId, $url);
 ?>

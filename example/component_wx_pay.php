@@ -6,8 +6,7 @@
 
 include_once "config.php";
 include_once "qrcode.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxComponentService.class.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxPay.class.php";
+include_once "bootstrap.php";
 
 class WxPayExample
 {

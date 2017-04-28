@@ -5,7 +5,7 @@
  */
 
 include_once "config.php";
-include_once dirname(dirname(__FILE__)) . "/src/WxLogin.class.php";
+include_once "bootstrap.php";
 
 $appId = "wx972be05f09e5714f"; // 微信开放平台 网站应用appId
 $appSecret = "2e1d51a74f0497b9b2a747ccf5809984"; // 微信开放平台 网站应用appSecret
