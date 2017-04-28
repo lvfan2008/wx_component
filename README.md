@@ -44,6 +44,9 @@ wx_component 2.0 增加了代公众号实现对微信支付的支持
     * 检查apache rewrite模块是否开启，是否支持.htaccess
 8. 发布成功后，用浏览器打开example的php样例，检测授权、js_sdk功能。
 
+## Composer安装说明
+1. composer require lv_fan2008/wx_component
+2. composer中文文档参考[http://docs.phpcomposer.com/](http://docs.phpcomposer.com/)
 
 ## 我的测试环境
 1. 使用的是阿里云主机
